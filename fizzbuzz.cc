@@ -15,9 +15,9 @@ template<typename Op1,typename Op2>
 struct Add
     :public Add<typename Op1::Inc,typename Op2::Dec>{};
 
-template<typename Volume>
-struct Add<Volume,Number<Null> >
-    :public Volume{};
+template<typename Op1>
+struct Add<Op1,Number<Null> >
+    :public Op1{};
 
 template<typename Op1,typename Op2,typename Count=Number<Null> >
 struct Mul
@@ -92,8 +92,8 @@ template<>struct Print<Nine >{static void print(){printf("9");}};
 template<typename Value,typename Base=One>
 struct PrintNumber{
     static void print(){
-        PrintNumber<Div<Value,Ten>::Value,Base::Inc>::print();
-        Print<Rem<Value,Ten>::Value >::print();
+        PrintNumber<typename Div<Value,Ten>::Value,typename Base::Inc>::print();
+        Print<typename Rem<Value,Ten>::Value >::print();
     }
 };
 
@@ -112,10 +112,10 @@ struct PrintNumber<Zero,One>{
 
 // fizz buzz definition
 
-template<typename Count,typename Fizz=Rem<Count,Three>::Value,typename Buzz=Rem<Count,Five>::Value >
+template<typename Count,typename Fizz=typename Rem<Count,Three>::Value,typename Buzz=typename Rem<Count,Five>::Value>
 struct FizzBuzz{
     static void count(){
-        FizzBuzz<Count::Dec>::count();
+        FizzBuzz<typename Count::Dec>::count();
         PrintNumber<Count>::print();
         printf("\n");
     }
@@ -124,7 +124,7 @@ struct FizzBuzz{
 template<typename Count>
 struct FizzBuzz<Count,Zero,Zero>{
     static void count(){
-        FizzBuzz<Count::Dec>::count();
+        FizzBuzz<typename Count::Dec>::count();
         printf("FizzBuzz\n");
     }
 };
@@ -132,7 +132,7 @@ struct FizzBuzz<Count,Zero,Zero>{
 template<typename Count,typename Buzz>
 struct FizzBuzz<Count,Zero,Buzz>{
     static void count(){
-        FizzBuzz<Count::Dec>::count();
+        FizzBuzz<typename Count::Dec>::count();
         printf("Fizz\n");
     }
 };
@@ -140,14 +140,14 @@ struct FizzBuzz<Count,Zero,Buzz>{
 template<typename Count,typename Fizz>
 struct FizzBuzz<Count,Fizz,Zero>{
     static void count(){
-        FizzBuzz<Count::Dec>::count();
+        FizzBuzz<typename Count::Dec>::count();
         printf("Buzz\n");
     }
 };
 
 template<>struct FizzBuzz<Zero,Zero,Zero>{static void count(){}};
 
-void main()
+int main()
 {
     FizzBuzz<Mul<Ten,Ten>::Value>::count();
 }
